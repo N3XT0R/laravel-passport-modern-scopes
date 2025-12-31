@@ -25,21 +25,9 @@ class PassportModernScopesServiceProvider extends ServiceProvider
 
     protected function bootMiddleware(): void
     {
-        /**
-         * @var Repository $config
-         */
-        $config = $this->app['config'];
-
-        if (false === $config->get('passport-modern-scopes.auto_boot.enabled', false)) {
-            return;
-        }
-
-        $group = $config->get('passport-modern-scopes.auto_boot.middleware_group', 'api');
-
         $this->app->make(GroupInjector::class)
             ->inject(
-                ResolvePassportScopeAttributes::class,
-                $group
+                ResolvePassportScopeAttributes::class
             );
     }
 
