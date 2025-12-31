@@ -20,8 +20,8 @@ By leveraging PHP 8 attributes and a single resolving middleware, required OAuth
 ### Example
 
 ```php
-use N3XT0R\PassportModernScopes\Support\Attributes\RequiresScope;
-use N3XT0R\PassportModernScopes\Support\Attributes\RequiresAnyScope;
+use App\Attributes\RequiresScope;
+use App\Attributes\RequiresAnyScope;
 
 #[RequiresScope('users:read')]
 final class UserController
@@ -37,3 +37,16 @@ final class UserController
         // Requires at least one of the given scopes
     }
 }
+```
+
+A single middleware inspects controller attributes at runtime and transparently applies Laravel Passport’s `CheckToken` middleware under the hood.
+
+### Why attributes?
+
+- Declarative and explicit
+- No duplication between routes and controllers
+- Easy to reason about during code review
+- Static-analysis and documentation friendly
+- No magic strings scattered across route definitions
+
+This approach provides a clean separation between **authorization intent** and **HTTP wiring**, allowing Passport-based APIs to scale without losing clarity or consistency.
