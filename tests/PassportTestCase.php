@@ -8,7 +8,7 @@ use Laravel\Passport\Passport;
 
 class PassportTestCase extends DatabaseTestCase
 {
-    const string KEYS = __DIR__ . '/../keys';
+    const string KEYS = __DIR__ . '/keys';
     const string PUBLIC_KEY = self::KEYS . '/oauth-public.key';
     const string PRIVATE_KEY = self::KEYS . '/oauth-private.key';
 
