@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace N3XT0R\PassportModernScopes\Support;
+namespace N3XT0R\PassportModernScopes\Support\Middleware;
 
 use Illuminate\Config\Repository;
 use Illuminate\Routing\Router;

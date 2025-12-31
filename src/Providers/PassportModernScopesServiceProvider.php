@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace N3XT0R\PassportModernScopes\Providers;
 
-use Illuminate\Config\Repository;
 use Illuminate\Support\ServiceProvider;
 use N3XT0R\PassportModernScopes\Http\Middleware\ResolvePassportScopeAttributes;
-use N3XT0R\PassportModernScopes\Support\GroupInjector;
+use N3XT0R\PassportModernScopes\Support\Middleware\GroupInjector;
 
 class PassportModernScopesServiceProvider extends ServiceProvider
 {
@@ -15,7 +14,7 @@ class PassportModernScopesServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                __DIR__ . '../../config/migration-generator.php' => config_path('passport-modern-scopes.php'),
+                __DIR__ . '/../../config/migration-generator.php' => config_path('passport-modern-scopes.php'),
             ],
             'passport-modern-scopes'
         );
@@ -25,6 +24,7 @@ class PassportModernScopesServiceProvider extends ServiceProvider
 
     protected function bootMiddleware(): void
     {
+        $this->app->bind(GroupInjector::class, GroupInjector::class);
         $this->app->make(GroupInjector::class)
             ->inject(
                 ResolvePassportScopeAttributes::class
@@ -34,7 +34,7 @@ class PassportModernScopesServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '../../config/passport-modern-scopes.php',
+            __DIR__ . '/../../config/passport-modern-scopes.php',
             'passport-modern-scopes'
         );
     }
