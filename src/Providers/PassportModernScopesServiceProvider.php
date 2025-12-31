@@ -35,11 +35,7 @@ class PassportModernScopesServiceProvider extends ServiceProvider
         if (false === $config->get('passport-modern-scopes.auto_boot.enabled', false)) {
             return;
         }
-
-        /**
-         * @var Router $router
-         */
-        $router = $this->app['router'];
+        
         $group = $config->get('passport-modern-scopes.auto_boot.middleware_group', 'api');
 
         $this->app->make(GroupInjector::class)
