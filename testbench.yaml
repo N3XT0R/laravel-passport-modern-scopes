@@ -25,6 +25,7 @@ workbench:
     - laravel/sanctum
   build:
     - asset-publish
+    - drop-sqlite-db
     - create-sqlite-db
     - db-wipe
     - migrate:refresh

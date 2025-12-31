@@ -39,7 +39,7 @@ jobs:
           composer update --prefer-dist --no-interaction --no-progress --with="illuminate/contracts=^${{ matrix.laravel }}"
 
       - name: Execute tests
-        run: vendor/bin/phpunit --display-deprecations --display-phpunit-deprecations --coverage-clover=coverage/clover.xml
+        run: vendor/bin/testbench package:test --coverage-clover=coverage/clover.xml
 
       - name: Send coverage to Qlty
         if: success()
