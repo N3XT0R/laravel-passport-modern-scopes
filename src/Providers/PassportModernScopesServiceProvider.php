@@ -35,7 +35,7 @@ class PassportModernScopesServiceProvider extends ServiceProvider
         if (false === $config->get('passport-modern-scopes.auto_boot.enabled', false)) {
             return;
         }
-        
+
         $group = $config->get('passport-modern-scopes.auto_boot.middleware_group', 'api');
 
         $this->app->make(GroupInjector::class)
@@ -43,5 +43,13 @@ class PassportModernScopesServiceProvider extends ServiceProvider
                 ResolvePassportScopeAttributes::class,
                 $group
             );
+    }
+
+    public function register(): void
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '../../config/passport-modern-scopes.php',
+            'passport-modern-scopes'
+        );
     }
 }
