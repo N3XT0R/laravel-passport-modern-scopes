@@ -1,0 +1,62 @@
+{
+    "name": "n3xt0r/laravel-passport-modern-scopes",
+    "description": "Filament admin UI for managing Laravel Passport OAuth clients, tokens, and scopes.",
+    "keywords": [
+        "N3XT0R",
+        "laravel",
+        "laravel-passport"
+    ],
+    "homepage": "https://github.com/N3XT0R/laravel-passport-modern-scopes",
+    "support": {
+        "issues": "https://github.com/N3XT0R/laravel-passport-modern-scopes/issues",
+        "source": "https://github.com/N3XT0R/laravel-passport-modern-scopes"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ilya Beliaev",
+            "email": "info@php-dev.info",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "laravel/passport": "^13.0"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^8.0",
+        "orchestra/testbench": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "N3XT0R\\PassportModernScopes\\": "src/",
+            "N3XT0R\\PassportModernScopes\\Database\\Factories\\": "database/factories/",
+            "N3XT0R\\PassportModernScopes\\Database\\Seeders\\": "database/Seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "N3XT0R\\PassportModernScopes\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
+        "test": "vendor/bin/phpunit --no-coverage"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "N3XT0R\\PassportModernScopes\\Providers\\PassportModernScopesServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
