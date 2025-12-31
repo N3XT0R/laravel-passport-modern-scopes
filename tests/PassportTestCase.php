@@ -19,7 +19,6 @@ class PassportTestCase extends DatabaseTestCase
 
             @unlink(self::PUBLIC_KEY);
             @unlink(self::PRIVATE_KEY);
-
             $this->artisan('passport:keys');
         });
 
