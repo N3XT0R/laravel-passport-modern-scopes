@@ -1,6 +1,7 @@
 {
     "name": "n3xt0r/laravel-passport-modern-scopes",
-    "description": "Filament admin UI for managing Laravel Passport OAuth clients, tokens, and scopes.",
+    "description": "Modern scope management for Laravel Passport",
+    "type": "library",
     "keywords": [
         "N3XT0R",
         "laravel",
