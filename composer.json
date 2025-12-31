@@ -29,9 +29,7 @@
     },
     "autoload": {
         "psr-4": {
-            "N3XT0R\\PassportModernScopes\\": "src/",
-            "N3XT0R\\PassportModernScopes\\Database\\Factories\\": "database/factories/",
-            "N3XT0R\\PassportModernScopes\\Database\\Seeders\\": "database/Seeders/"
+            "N3XT0R\\PassportModernScopes\\": "src/"
         }
     },
     "autoload-dev": {
