@@ -21,6 +21,17 @@ class DatabaseTestCase extends TestCase
             'auth.providers.users.model' => User::class,
             'auth.guards.api' => ['driver' => 'passport', 'provider' => 'users'],
             'database.default' => 'testing',
+            'database.connections.testing' => [
+                'driver' => 'sqlite',
+                'database' => ':memory:',
+                'prefix' => '',
+                'foreign_key_constraints' => false,
+            ],
         ]);
+    }
+
+    protected function defineDatabaseMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
     }
 }

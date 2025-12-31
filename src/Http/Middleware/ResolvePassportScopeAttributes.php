@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace N3XT0R\PassportModernScopes\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresAnyScope;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresScope;
-use N3XT0R\PassportModernScopes\Support\Passport\PassportScopes;
-use Closure;
 use ReflectionMethod;
 
 final class ResolvePassportScopeAttributes
@@ -22,37 +21,87 @@ final class ResolvePassportScopeAttributes
             return $next($request);
         }
 
-        $this->applyAttributes($route);
+        foreach ($this->resolveScopeAttributes($route) as $attribute) {
+            if ($attribute instanceof RequiresScope
+                && !$this->tokenHasAll($request, $attribute->scopes)
+            ) {
+                abort(403, 'Invalid scope.');
+            }
+
+            if ($attribute instanceof RequiresAnyScope
+                && !$this->tokenHasAny($request, $attribute->scopes)
+            ) {
+                abort(403, 'Invalid scope.');
+            }
+        }
 
         return $next($request);
     }
 
-    private function applyAttributes(Route $route): void
+    /**
+     * Determine which scope attributes are defined on the route controller.
+     *
+     * @return array<int, RequiresScope|RequiresAnyScope>
+     */
+    private function resolveScopeAttributes(Route $route): array
     {
-        [$controller, $method] = $route->getAction('controller') ?? [null, null];
+        $action = $route->getAction('controller');
+
+        if (is_string($action) && str_contains($action, '@')) {
+            [$controller, $method] = explode('@', $action, 2);
+        } elseif (is_array($action) && count($action) === 2) {
+            [$controller, $method] = $action;
+        } else {
+            return [];
+        }
 
         if (!is_string($controller) || !method_exists($controller, $method)) {
-            return;
+            return [];
         }
 
         $reflection = new ReflectionMethod($controller, $method);
+        $attributes = [];
 
         foreach ($reflection->getAttributes() as $attribute) {
             $instance = $attribute->newInstance();
 
-            match (true) {
-                $instance instanceof RequiresScope =>
-                $route->middleware(
-                    PassportScopes::requires(...$instance->scopes)
-                ),
-
-                $instance instanceof RequiresAnyScope =>
-                $route->middleware(
-                    PassportScopes::requiresAny(...$instance->scopes)
-                ),
-
-                default => null,
-            };
+            if ($instance instanceof RequiresScope || $instance instanceof RequiresAnyScope) {
+                $attributes[] = $instance;
+            }
         }
+
+        return $attributes;
+    }
+
+    private function tokenHasAll(Request $request, array $scopes): bool
+    {
+        foreach ($scopes as $scope) {
+            if (!$this->tokenCan($request, $scope)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function tokenHasAny(Request $request, array $scopes): bool
+    {
+        foreach ($scopes as $scope) {
+            if ($this->tokenCan($request, $scope)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function tokenCan(Request $request, string $scope): bool
+    {
+        $user = $request->user();
+
+        if ($user === null || !method_exists($user, 'tokenCan')) {
+            return false;
+        }
+        return $user->tokenCan($scope);
     }
 }
