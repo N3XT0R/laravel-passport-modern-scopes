@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace N3XT0R\PassportModernScopes\Providers;
 
 use Illuminate\Config\Repository;
-use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use N3XT0R\PassportModernScopes\Enum\MiddlewareLoadOrderEnum;
 use N3XT0R\PassportModernScopes\Http\Middleware\ResolvePassportScopeAttributes;
 use N3XT0R\PassportModernScopes\Support\GroupInjector;
 
