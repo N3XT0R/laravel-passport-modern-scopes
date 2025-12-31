@@ -4,33 +4,32 @@ declare(strict_types=1);
 
 namespace N3XT0R\PassportModernScopes\Tests\Feature\Http\Middleware;
 
-
+use App\Models\User;
 use Laravel\Passport\Passport;
 use N3XT0R\PassportModernScopes\Tests\Fixtures\Http\Controllers\ScopeAttributeController;
 use N3XT0R\PassportModernScopes\Tests\PassportTestCase;
-use App\Models\User;
-use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 
 final class ResolvePassportScopeAttributesFeatureTest extends PassportTestCase
 {
-    use WithLaravelMigrations;
-
     protected function setUp(): void
     {
         parent::setUp();
 
+        // Routen laufen durch die api-Middleware-Group
         $this->app['router']->middleware('api')->group(function () {
-            $this->app['router']->get('/requires-all', [
-                'uses' => [ScopeAttributeController::class, 'requiresAll'],
-            ]);
+            $this->app['router']->get(
+                '/requires-all',
+                ScopeAttributeController::class . '@requiresAll'
+            );
 
-            $this->app['router']->get('/requires-any', [
-                'uses' => [ScopeAttributeController::class, 'requiresAny'],
-            ]);
+            $this->app['router']->get(
+                '/requires-any',
+                ScopeAttributeController::class . '@requiresAny'
+            );
         });
     }
 
-    public function testRequiresScopeDeniesAccessWithoutScopes(): void
+    public function testRequiresScopeDeniesAccessWithoutAllScopes(): void
     {
         Passport::actingAs(
             User::factory()->create(),
