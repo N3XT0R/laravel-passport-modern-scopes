@@ -1,10 +1,10 @@
-name: tests
+name: tests with coverage
 
 on:
   push:
-    branches: [ '*/*' ]
+    branches: [ 'develop', 'main' ]
   pull_request:
-    branches: [ '*/*' ]
+    branches: [ 'develop', 'main' ]
 
 jobs:
   tests:
@@ -29,14 +29,21 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip
+          extensions: dom, curl, libxml, mbstring, zip, xdebug
           ini-values: error_reporting=E_ALL
           tools: composer:v2
-          coverage: none
+          coverage: xdebug
 
       - name: Install dependencies
         run: |
           composer update --prefer-dist --no-interaction --no-progress --with="illuminate/contracts=^${{ matrix.laravel }}"
 
       - name: Execute tests
-        run: vendor/bin/phpunit --display-deprecations --display-phpunit-deprecations --no-coverage
+        run: vendor/bin/phpunit --display-deprecations --display-phpunit-deprecations --coverage-clover=coverage/clover.xml
+
+      - name: Send coverage to Qlty
+        if: success()
+        uses: qltysh/qlty-action/coverage@v1
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/clover.xml
