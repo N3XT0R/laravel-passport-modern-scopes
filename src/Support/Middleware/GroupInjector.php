@@ -11,7 +11,7 @@ use N3XT0R\PassportModernScopes\Enum\MiddlewareLoadOrderEnum;
 
 final class GroupInjector
 {
-    private const string CONFIG_PREFIX = 'passport-modern-scopes.auto_boot';
+    private const string CONFIG_ROOT = 'passport-modern-scopes.auto_boot';
 
     public function __construct(
         private readonly Router $router,
@@ -19,43 +19,45 @@ final class GroupInjector
     ) {
     }
 
-    /**
-     * Inject middleware into the specified group based on configuration.
-     * @param string $middlewareClass
-     * @param string $group
-     * @return void
-     */
-    public function inject(
-        string $middlewareClass,
-        string $group
-    ): void {
-        if (!$this->config->get(self::CONFIG_PREFIX . '.enabled', false)) {
+    public function inject(string $middleware): void
+    {
+        if (!$this->config->get(self::CONFIG_ROOT . '.enabled', false)) {
             return;
         }
 
-        $order = $this->resolveOrder();
+        $groups = $this->config->get(self::CONFIG_ROOT . '.groups');
 
-        match ($order) {
-            MiddlewareLoadOrderEnum::PREPEND => $this->prepend($middlewareClass, $group),
-            MiddlewareLoadOrderEnum::APPEND => $this->append($middlewareClass, $group),
-            MiddlewareLoadOrderEnum::CUSTOM => $this->custom($middlewareClass, $group),
-        };
+        if (!is_array($groups) || $groups === []) {
+            throw new LogicException(
+                'passport-modern-scopes.auto_boot.groups must be a non-empty array.'
+            );
+        }
+
+        foreach ($groups as $group => $groupConfig) {
+            $this->injectIntoGroup($middleware, $group, $groupConfig);
+        }
     }
 
-    /**
-     * Resolve the middleware load order from configuration.
-     * @return MiddlewareLoadOrderEnum
-     */
-    private function resolveOrder(): MiddlewareLoadOrderEnum
-    {
-        $value = $this->config->get(
-            self::CONFIG_PREFIX . '.order',
-            MiddlewareLoadOrderEnum::APPEND->value
+    private function injectIntoGroup(
+        string $middleware,
+        string $group,
+        array $config
+    ): void {
+        $order = MiddlewareLoadOrderEnum::from(
+            $config['order'] ?? throw new LogicException(
+            "Missing 'order' for middleware group [$group]."
+        )
         );
 
-        return $value instanceof MiddlewareLoadOrderEnum
-            ? $value
-            : MiddlewareLoadOrderEnum::from((string)$value);
+        match ($order) {
+            MiddlewareLoadOrderEnum::PREPEND => $this->prepend($middleware, $group),
+            MiddlewareLoadOrderEnum::APPEND => $this->append($middleware, $group),
+            MiddlewareLoadOrderEnum::CUSTOM => $this->custom(
+                $middleware,
+                $group,
+                $config['custom_position'] ?? []
+            ),
+        };
     }
 
     /**
@@ -84,17 +86,20 @@ final class GroupInjector
      * Inject middleware at a custom position in the group.
      * @param string $middleware
      * @param string $group
+     * @param array $position
      * @return void
      */
-    private function custom(string $middleware, string $group): void
-    {
-        $before = $this->config->get(
-            self::CONFIG_PREFIX . '.custom_position.before'
-        );
+    private function custom(
+        string $middleware,
+        string $group,
+        array $position
+    ): void {
+        $before = $position['before'] ?? null;
+        $after = $position['after'] ?? null;
 
-        if (!$before) {
+        if (!$before && !$after) {
             throw new LogicException(
-                'CUSTOM middleware order requires passport-modern-scopes.auto_boot.custom_position.before'
+                "CUSTOM order for group [$group] requires 'before' or 'after'."
             );
         }
 
@@ -105,15 +110,19 @@ final class GroupInjector
         }
 
         $middlewares = $groups[$group];
-        $index = array_search($before, $middlewares, true);
+        $target = $before ?? $after;
+
+        $index = array_search($target, $middlewares, true);
 
         if ($index === false) {
             throw new LogicException(
-                "Target middleware [$before] not found in group [$group]."
+                "Target middleware [$target] not found in group [$group]."
             );
         }
 
-        array_splice($middlewares, $index, 0, [$middleware]);
+        $offset = $before ? 0 : 1;
+
+        array_splice($middlewares, $index + $offset, 0, [$middleware]);
 
         $this->router->middlewareGroup($group, $middlewares);
     }
