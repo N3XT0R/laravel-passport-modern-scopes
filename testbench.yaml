@@ -21,11 +21,13 @@ workbench:
     components: false
     factories: true
     views: false
+  dont-discover:
+    - laravel/sanctum
   build:
     - asset-publish
     - create-sqlite-db
     - db-wipe
-    - migrate-fresh
+    - migrate:refresh
   assets:
     - laravel-assets
   sync:
