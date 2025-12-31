@@ -56,4 +56,11 @@ and `CheckTokenForAnyScope` middleware under the hood.
 
 This approach provides a clean separation between **authorization intent** and **HTTP wiring**, allowing Passport-based
 APIs to scale without losing clarity or consistency.
- 
+
+## Installation
+
+```bash
+composer require n3xt0r/laravel-passport-modern-scopes
+```
+
+The middleware is automatically registered via the package's service provider.
