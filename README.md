@@ -1,0 +1,39 @@
+# Passport Modern Scopes 
+
+---
+
+## Attribute-based OAuth Scope Enforcement
+
+Laravel Passport traditionally enforces OAuth scopes at the routing level, typically via middleware definitions in route files. While functional, this approach tends to scatter authorization rules across routes and couples controllers to infrastructure-level concerns.
+
+This package introduces an **attribute-based approach** to OAuth scope enforcement.
+
+By leveraging PHP 8 attributes and a single resolving middleware, required OAuth scopes can be declared **directly on controllers or controller actions**, keeping authorization rules close to the code they protect while remaining fully compatible with Laravel Passport.
+
+### Key ideas
+
+- OAuth scopes are **declared, not wired**
+- Controllers express **requirements**, not middleware mechanics
+- Passport remains untouched and fully in control of token validation
+- Routes stay clean and infrastructure-agnostic
+
+### Example
+
+```php
+use App\Attributes\RequiresScope;
+use App\Attributes\RequiresAnyScope;
+
+#[RequiresScope('users:read')]
+final class UserController
+{
+    public function index()
+    {
+        // Requires users:read
+    }
+
+    #[RequiresAnyScope('users:update', 'users:write')]
+    public function update()
+    {
+        // Requires at least one of the given scopes
+    }
+}
