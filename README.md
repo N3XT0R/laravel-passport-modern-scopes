@@ -20,8 +20,8 @@ By leveraging PHP 8 attributes and a single resolving middleware, required OAuth
 ### Example
 
 ```php
-use App\Attributes\RequiresScope;
-use App\Attributes\RequiresAnyScope;
+use N3XT0R\PassportModernScopes\Support\Attributes\RequiresScope;
+use N3XT0R\PassportModernScopes\Support\Attributes\RequiresAnyScope;
 
 #[RequiresScope('users:read')]
 final class UserController
