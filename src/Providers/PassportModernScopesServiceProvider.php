@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N3XT0R\PassportModernScopes\Providers;
 
 use Illuminate\Config\Repository;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use N3XT0R\PassportModernScopes\Http\Middleware\ResolvePassportScopeAttributes;
 
@@ -28,13 +29,16 @@ class PassportModernScopesServiceProvider extends ServiceProvider
          * @var Repository $config
          */
         $config = $this->app['config'];
-        
+
         if (false === $config->get('auto_boot.enabled', false)) {
             return;
         }
 
-
-        $this->app['router']->pushMiddlewareToGroup(
+        /**
+         * @var Router $router
+         */
+        $router = $this->app['router'];
+        $router->pushMiddlewareToGroup(
             $config->get('auto_boot.middleware_group', 'api'),
             ResolvePassportScopeAttributes::class
         );
