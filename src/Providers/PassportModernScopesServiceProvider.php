@@ -29,6 +29,12 @@ class PassportModernScopesServiceProvider extends ServiceProvider
             ->inject(
                 ResolvePassportScopeAttributes::class
             );
+
+        if ($this->app['config']->get('passport-modern-scopes.auto_boot.enabled', false)) {
+            $this->app['router']->pushMiddlewareToGroup('api', ResolvePassportScopeAttributes::class);
+            $this->app->make('Illuminate\Contracts\Http\Kernel')
+                ->pushMiddleware(ResolvePassportScopeAttributes::class);
+        }
     }
 
     public function register(): void
