@@ -9,6 +9,17 @@ return [
         'enabled' => true,
         'middleware_group' => 'api',
         'order' => MiddlewareLoadOrderEnum::APPEND->value, // prepend | append | custom
+
+        /**
+         * When using 'custom' order, specify the middleware class and its position
+         * relative to which the PassportModernScopes middleware should be placed.
+         * Example:
+         * 'custom_position' => [
+         *     'before' => \App\Http\Middleware\SomeMiddleware::class,
+         *     // or
+         *     'after' => \App\Http\Middleware\AnotherMiddleware::class,
+         * ],
+         */
         'custom_position' => [
             'before' => \Laravel\Passport\Http\Middleware\CheckToken::class,
         ],
