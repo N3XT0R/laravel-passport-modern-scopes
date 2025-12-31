@@ -28,9 +28,8 @@ class PassportModernScopesServiceProvider extends ServiceProvider
          * @var Repository $config
          */
         $config = $this->app['config'];
-
-
-        if (!($config->get('auto_boot.enabled') ?? true)) {
+        
+        if (false === $config->get('auto_boot.enabled', false)) {
             return;
         }
 
