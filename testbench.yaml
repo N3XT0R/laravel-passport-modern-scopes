@@ -2,7 +2,7 @@ laravel: '@testbench'
 
 providers:
   - Laravel\Passport\PassportServiceProvider
-  - Workbench\App\Providers\WorkbenchServiceProvider
+  - N3XT0R\PassportModernScopes\Providers\PassportModernScopesServiceProvider
 
 migrations:
   - workbench/database/migrations
