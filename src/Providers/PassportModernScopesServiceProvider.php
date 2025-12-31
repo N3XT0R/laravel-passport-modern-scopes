@@ -7,7 +7,9 @@ namespace N3XT0R\PassportModernScopes\Providers;
 use Illuminate\Config\Repository;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use N3XT0R\PassportModernScopes\Enum\MiddlewareLoadOrderEnum;
 use N3XT0R\PassportModernScopes\Http\Middleware\ResolvePassportScopeAttributes;
+use N3XT0R\PassportModernScopes\Support\GroupInjector;
 
 class PassportModernScopesServiceProvider extends ServiceProvider
 {
@@ -30,7 +32,7 @@ class PassportModernScopesServiceProvider extends ServiceProvider
          */
         $config = $this->app['config'];
 
-        if (false === $config->get('auto_boot.enabled', false)) {
+        if (false === $config->get('passport-modern-scopes.auto_boot.enabled', false)) {
             return;
         }
 
@@ -38,9 +40,12 @@ class PassportModernScopesServiceProvider extends ServiceProvider
          * @var Router $router
          */
         $router = $this->app['router'];
-        $router->pushMiddlewareToGroup(
-            $config->get('auto_boot.middleware_group', 'api'),
-            ResolvePassportScopeAttributes::class
-        );
+        $group = $config->get('passport-modern-scopes.auto_boot.middleware_group', 'api');
+
+        $this->app->make(GroupInjector::class)
+            ->inject(
+                ResolvePassportScopeAttributes::class,
+                $group
+            );
     }
 }
