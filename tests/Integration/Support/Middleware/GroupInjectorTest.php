@@ -16,8 +16,6 @@ final class GroupInjectorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Basis-Middleware-Group definieren
         $this->app['router']->middlewareGroup('web', [
             'first',
             'second',
