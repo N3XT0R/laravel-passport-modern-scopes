@@ -13,8 +13,17 @@ use N3XT0R\PassportModernScopes\Support\Attributes\RequiresAnyScope;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresScope;
 use ReflectionMethod;
 
+/**
+ * Middleware to resolve Passport scope attributes on route controllers.
+ */
 final class ResolvePassportScopeAttributes
 {
+    /**
+     * Handle an incoming request.
+     * @param Request $request
+     * @param Closure $next
+     * @return mixed
+     */
     public function handle(Request $request, Closure $next)
     {
         $route = $request->route();
