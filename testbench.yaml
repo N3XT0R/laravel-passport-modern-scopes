@@ -14,6 +14,7 @@ workbench:
   start: '/'
   install: true
   health: false
+  guard: web
   discovers:
     web: true
     api: true
