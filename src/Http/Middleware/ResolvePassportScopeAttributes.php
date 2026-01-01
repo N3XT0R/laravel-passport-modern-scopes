@@ -82,13 +82,7 @@ final class ResolvePassportScopeAttributes
      */
     private function tokenHasAll(Request $request, array $scopes): bool
     {
-        foreach ($scopes as $scope) {
-            if (!$this->tokenCan($request, $scope)) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($scopes, fn($scope) => $this->tokenCan($request, $scope));
     }
 
     /**
