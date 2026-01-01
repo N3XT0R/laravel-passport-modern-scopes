@@ -36,6 +36,10 @@ final class ResolvePassportScopeAttributes
 
         $authenticatable = $request->user();
 
+        if (!$authenticatable instanceof OAuthenticatable) {
+            abort(401, 'Unauthenticated.');
+        }
+
         foreach ($this->resolveScopeAttributes($route) as $attribute) {
             if ($attribute instanceof RequiresScope
                 && !$this->tokenHasAll($authenticatable, $attribute->scopes)
