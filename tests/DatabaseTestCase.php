@@ -31,9 +31,4 @@ class DatabaseTestCase extends TestCase
             ],
         ]);
     }
-
-    protected function defineDatabaseMigrations(): void
-    {
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
-    }
 }
