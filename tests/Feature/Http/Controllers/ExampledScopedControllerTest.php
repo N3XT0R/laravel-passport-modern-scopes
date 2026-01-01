@@ -11,14 +11,15 @@ use N3XT0R\PassportModernScopes\Tests\PassportTestCase;
 
 class ExampledScopedControllerTest extends PassportTestCase
 {
+
     protected string $route = '/example-scoped';
 
-
-    protected function defineRoutes($router): void
+    protected function setUp(): void
     {
-        $router->middleware('api')
-            ->apiResource($this->route, ExampleScopedController::class);
+        parent::setUp();
+        $this->app['config']->set('passport-modern-scopes.auto_boot.enabled', true);
     }
+
 
     public function testIndexRequiresReadScopeReturnsOk(): void
     {

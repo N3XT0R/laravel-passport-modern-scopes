@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use N3XT0R\PassportModernScopes\Enum\MiddlewareLoadOrderEnum;
 
 return [
@@ -9,7 +10,7 @@ return [
         'enabled' => true,
         'groups' => [
             'api' => [
-                'order' => MiddlewareLoadOrderEnum::APPEND->value, // prepend | append | custom
+                'order' => MiddlewareLoadOrderEnum::CUSTOM->value, // prepend | append | custom
                 /**
                  * When using 'custom' order, specify the middleware class and its position
                  * relative to which the PassportModernScopes middleware should be placed.
@@ -21,8 +22,8 @@ return [
                  * ],
                  */
                 'custom_position' => [
-                    'before' => \Laravel\Passport\Http\Middleware\CheckToken::class,
-                    // or 'after' => \App\Http\Middleware\AnotherMiddleware::class,
+                    //'before' => \Laravel\Passport\Http\Middleware\CheckToken::class,
+                    'after' => SubstituteBindings::class,
                 ],
             ],
         ],

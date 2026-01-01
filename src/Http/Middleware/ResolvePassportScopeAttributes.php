@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace N3XT0R\PassportModernScopes\Http\Middleware;
 
 use Closure;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresAnyScope;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresScope;
 use ReflectionMethod;
+use ReflectionClass;
 
 /**
  * Middleware to resolve Passport scope attributes on route controllers.
@@ -33,6 +33,7 @@ final class ResolvePassportScopeAttributes
         if (!$route instanceof Route) {
             return $next($request);
         }
+
 
         $authenticatable = $request->user();
 
@@ -65,7 +66,7 @@ final class ResolvePassportScopeAttributes
      */
     private function resolveScopeAttributes(Route $route): array
     {
-        $action = $this->resolveControllerAndActionFromRoute($route->getAction('controller'));
+        $action = $this->resolveControllerAndActionFromRoute($route);
         if ($action === null) {
             return [];
         }
@@ -76,17 +77,34 @@ final class ResolvePassportScopeAttributes
             return [];
         }
 
-        $reflection = new ReflectionMethod($controller, $method);
         $attributes = [];
 
-        foreach ($reflection->getAttributes() as $attribute) {
-            $instance = $attribute->newInstance();
+        $attributes = array_merge(
+            $attributes,
+            $this->getAttributesFromReflector(
+                new ReflectionClass($controller)
+            )
+        );
 
+        $attributes = array_merge(
+            $attributes,
+            $this->getAttributesFromReflector(
+                new ReflectionMethod($controller, $method)
+            )
+        );
+
+        return $attributes;
+    }
+
+    private function getAttributesFromReflector(ReflectionClass|ReflectionMethod $reflector): array
+    {
+        $attributes = [];
+        foreach ($reflector->getAttributes() as $attribute) {
+            $instance = $attribute->newInstance();
             if ($instance instanceof RequiresScope || $instance instanceof RequiresAnyScope) {
                 $attributes[] = $instance;
             }
         }
-
         return $attributes;
     }
 
