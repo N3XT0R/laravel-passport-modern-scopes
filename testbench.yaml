@@ -4,9 +4,6 @@ providers:
   - Laravel\Passport\PassportServiceProvider
   - N3XT0R\PassportModernScopes\Providers\PassportModernScopesServiceProvider
 
-migrations:
-  - workbench/database/migrations
-
 seeders:
   - Database\Seeders\DatabaseSeeder
 
