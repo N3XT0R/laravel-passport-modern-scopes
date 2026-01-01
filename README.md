@@ -66,7 +66,7 @@ APIs to scale without losing clarity or consistency.
 ## Installation
 
 ```bash
-composer require n3xt0r/laravel-passport-modern-scopes
+composer require n3xt0r/laravel-passport-modern-scopes:^2.0
 ```
 
 The middleware is automatically registered via the package's service provider.
