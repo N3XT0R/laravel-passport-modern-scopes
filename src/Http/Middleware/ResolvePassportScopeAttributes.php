@@ -41,6 +41,7 @@ final class ResolvePassportScopeAttributes
     /**
      * Determine which scope attributes are defined on the route controller.
      *
+     * @param Route $route
      * @return array<int, RequiresScope|RequiresAnyScope>
      */
     private function resolveScopeAttributes(Route $route): array
@@ -73,6 +74,12 @@ final class ResolvePassportScopeAttributes
         return $attributes;
     }
 
+    /**
+     * Determine if the token has all of the given scopes.
+     * @param Request $request
+     * @param array $scopes
+     * @return bool
+     */
     private function tokenHasAll(Request $request, array $scopes): bool
     {
         foreach ($scopes as $scope) {
@@ -84,6 +91,12 @@ final class ResolvePassportScopeAttributes
         return true;
     }
 
+    /**
+     * Determine if the token has any of the given scopes.
+     * @param Request $request
+     * @param array $scopes
+     * @return bool
+     */
     private function tokenHasAny(Request $request, array $scopes): bool
     {
         foreach ($scopes as $scope) {
@@ -95,6 +108,12 @@ final class ResolvePassportScopeAttributes
         return false;
     }
 
+    /**
+     * Determine if the token has the given scope.
+     * @param Request $request
+     * @param string $scope
+     * @return bool
+     */
     private function tokenCan(Request $request, string $scope): bool
     {
         $user = $request->user();
