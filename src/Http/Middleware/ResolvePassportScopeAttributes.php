@@ -50,15 +50,12 @@ final class ResolvePassportScopeAttributes
      */
     private function resolveScopeAttributes(Route $route): array
     {
-        $action = $route->getAction('controller');
-
-        if (is_string($action) && str_contains($action, '@')) {
-            [$controller, $method] = explode('@', $action, 2);
-        } elseif (is_array($action) && count($action) === 2) {
-            [$controller, $method] = $action;
-        } else {
+        $action = $this->resolveControllerAndActionFromRoute($route->getAction('controller'));
+        if ($action === null) {
             return [];
         }
+
+        [$controller, $method] = $action;
 
         if (!is_string($controller) || !method_exists($controller, $method)) {
             return [];
@@ -76,6 +73,22 @@ final class ResolvePassportScopeAttributes
         }
 
         return $attributes;
+    }
+
+    /**
+     * Resolve the controller and action method from the route action.
+     * @param Route $route
+     * @return array|null
+     */
+    private function resolveControllerAndActionFromRoute(Route $route): ?array
+    {
+        $action = $route->getAction('controller');
+
+        return match (true) {
+            is_string($action) && str_contains($action, '@') => explode('@', $action, 2),
+            is_array($action) && count($action) === 2 => $action,
+            default => null,
+        };
     }
 
     /**
