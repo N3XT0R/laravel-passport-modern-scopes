@@ -18,7 +18,7 @@ use ReflectionClass;
  * @package N3XT0R\PassportModernScopes\Http\Middleware
  * @author Ilya Beliaev <info@php-dev.info>
  */
-final class ResolvePassportScopeAttributes
+final class ResolvePassportScopeAttributesMiddleware
 {
     /**
      * Handle an incoming request.

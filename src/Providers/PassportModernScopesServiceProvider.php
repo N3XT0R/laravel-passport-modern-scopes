@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace N3XT0R\PassportModernScopes\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use N3XT0R\PassportModernScopes\Http\Middleware\ResolvePassportScopeAttributes;
+use N3XT0R\PassportModernScopes\Http\Middleware\ResolvePassportScopeAttributesMiddleware;
 use N3XT0R\PassportModernScopes\Support\Middleware\GroupInjector;
 use Illuminate\Contracts\Http\Kernel;
 
@@ -33,7 +33,7 @@ class PassportModernScopesServiceProvider extends ServiceProvider
         $this->app->bind(GroupInjector::class);
         $this->app->make(GroupInjector::class)
             ->inject(
-                ResolvePassportScopeAttributes::class
+                ResolvePassportScopeAttributesMiddleware::class
             );
 
         if ($this->app['config']->get('passport-modern-scopes.auto_boot.enabled', false)) {
@@ -41,7 +41,7 @@ class PassportModernScopesServiceProvider extends ServiceProvider
             if (!array_key_exists('api', $router->getMiddlewareGroups())) {
                 $router->middlewareGroup('api', []);
             }
-            $router->pushMiddlewareToGroup('api', ResolvePassportScopeAttributes::class);
+            $router->pushMiddlewareToGroup('api', ResolvePassportScopeAttributesMiddleware::class);
         }
     }
 
@@ -52,6 +52,6 @@ class PassportModernScopesServiceProvider extends ServiceProvider
             'passport-modern-scopes'
         );
 
-        $this->app->singleton(ResolvePassportScopeAttributes::class);
+        $this->app->singleton(ResolvePassportScopeAttributesMiddleware::class);
     }
 }
