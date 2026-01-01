@@ -15,6 +15,8 @@ use ReflectionMethod;
 
 /**
  * Middleware to resolve Passport scope attributes on route controllers.
+ * @package N3XT0R\PassportModernScopes\Http\Middleware
+ * @author Ilya Beliaev <info@php-dev.info>
  */
 final class ResolvePassportScopeAttributes
 {
