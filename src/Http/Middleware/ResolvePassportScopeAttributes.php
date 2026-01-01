@@ -92,7 +92,7 @@ final class ResolvePassportScopeAttributes
     }
 
     /**
-     * Determine if the token has all of the given scopes.
+     * Determine if the token has all the given scopes.
      * @param OAuthenticatable $authenticatable
      * @param array $scopes
      * @return bool
