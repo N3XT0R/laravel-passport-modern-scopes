@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace N3XT0R\PassportModernScopes\Support\Resolver\Attributes;
 
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresAnyScope;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresScope;
@@ -21,7 +22,7 @@ final class ScopeAttributeResolver
      * @param class-string $controller
      * @param string $method
      * @return array<RequiresScope|RequiresAnyScope>
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function resolve(string $controller, string $method): array
     {
