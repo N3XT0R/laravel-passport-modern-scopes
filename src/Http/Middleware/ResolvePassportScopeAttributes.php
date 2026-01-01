@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace N3XT0R\PassportModernScopes\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Laravel\Passport\Contracts\OAuthenticatable;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresAnyScope;
 use N3XT0R\PassportModernScopes\Support\Attributes\RequiresScope;
 use ReflectionMethod;
@@ -21,15 +23,17 @@ final class ResolvePassportScopeAttributes
             return $next($request);
         }
 
+        $authenticatable = $request->user();
+
         foreach ($this->resolveScopeAttributes($route) as $attribute) {
             if ($attribute instanceof RequiresScope
-                && !$this->tokenHasAll($request, $attribute->scopes)
+                && !$this->tokenHasAll($authenticatable, $attribute->scopes)
             ) {
                 abort(403, 'Invalid scope.');
             }
 
             if ($attribute instanceof RequiresAnyScope
-                && !$this->tokenHasAny($request, $attribute->scopes)
+                && !$this->tokenHasAny($authenticatable, $attribute->scopes)
             ) {
                 abort(403, 'Invalid scope.');
             }
@@ -76,45 +80,23 @@ final class ResolvePassportScopeAttributes
 
     /**
      * Determine if the token has all of the given scopes.
-     * @param Request $request
+     * @param OAuthenticatable $authenticatable
      * @param array $scopes
      * @return bool
      */
-    private function tokenHasAll(Request $request, array $scopes): bool
+    private function tokenHasAll(OAuthenticatable $authenticatable, array $scopes): bool
     {
-        return array_all($scopes, fn($scope) => $this->tokenCan($request, $scope));
+        return array_all($scopes, fn($scope) => $authenticatable->tokenCan($scope));
     }
 
     /**
      * Determine if the token has any of the given scopes.
-     * @param Request $request
+     * @param OAuthenticatable $authenticatable
      * @param array $scopes
      * @return bool
      */
-    private function tokenHasAny(Request $request, array $scopes): bool
+    private function tokenHasAny(OAuthenticatable $authenticatable, array $scopes): bool
     {
-        foreach ($scopes as $scope) {
-            if ($this->tokenCan($request, $scope)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Determine if the token has the given scope.
-     * @param Request $request
-     * @param string $scope
-     * @return bool
-     */
-    private function tokenCan(Request $request, string $scope): bool
-    {
-        $user = $request->user();
-
-        if ($user === null || !method_exists($user, 'tokenCan')) {
-            return false;
-        }
-        return $user->tokenCan($scope);
+        return array_any($scopes, fn($scope) => $authenticatable->tokenCan($scope));
     }
 }
