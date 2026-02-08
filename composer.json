@@ -72,6 +72,9 @@
       "php-http/discovery": true
     }
   },
+  "suggest": {
+    "n3xt0r/laravel-passport-authorization-core": "Domain-oriented authorization core for Laravel Passport, providing structured scope and permission modeling without UI or OAuth flow implementation."
+  },
   "minimum-stability": "dev",
   "prefer-stable": true
 }
