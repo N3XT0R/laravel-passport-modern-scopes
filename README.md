@@ -49,8 +49,8 @@ final class UserController
 }
 ```
 
-A single middleware inspects controller attributes at runtime and transparently applies Laravel Passport’s `CheckToken`
-and `CheckTokenForAnyScope` middleware under the hood.
+A single middleware inspects controller attributes at runtime and enforces them using Laravel Passport’s native scope
+checks (`tokenCan`). Authentication itself remains the responsibility of your configured guard (e.g. `auth:api`).
 
 ### Why attributes?
 

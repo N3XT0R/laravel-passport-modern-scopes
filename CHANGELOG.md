@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] – 2026-02-09
+
+### Added
+
+- Added Suggestion to composer.json for "n3xt0r/laravel-passport-authorization-core" package to enhance developer
+  experience and promote modular architecture.
+- Added Support for PHP 8.4/PHP8.5
+
 ## [2.0.0] – 2026-01-01
 
 ### Added
