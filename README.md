@@ -2,6 +2,8 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/n3xt0r/laravel-passport-modern-scopes/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/n3xt0r/laravel-passport-modern-scopes/actions?query=workflow%3Atests+branch%3Amain)
 [![Maintainability](https://qlty.sh/gh/N3XT0R/projects/laravel-passport-modern-scopes/maintainability.svg)](https://qlty.sh/gh/N3XT0R/projects/laravel-passport-modern-scopes)
 [![Code Coverage](https://qlty.sh/gh/N3XT0R/projects/laravel-passport-modern-scopes/coverage.svg)](https://qlty.sh/gh/N3XT0R/projects/laravel-passport-modern-scopes)
+[![Total Downloads](https://img.shields.io/packagist/dt/n3xt0r/laravel-passport-modern-scopes.svg?style=flat-square)](https://packagist.org/packages/n3xt0r/laravel-passport-modern-scopes)
+
 ---
 
 # Passport Modern Scopes
